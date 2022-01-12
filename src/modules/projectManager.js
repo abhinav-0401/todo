@@ -1,26 +1,5 @@
 import implementTabSystem from "./tabSystem";
-import Todo from "./todo";
-
-class Project {
-
-    todoArr = [];
-    projectID = 100;
-    
-    constructor(name) {
-        this.name = name;  
-    }
-
-    addTodo(name, description, priority) {
-        this.todoArr.push(new Todo(name, description, priority, this));
-    }
-
-    removeTodo(todoID) {
-        this.todoArr.splice(todoID, 1);
-
-        this.todoArr.refreshID(this);
-    }
-
-};
+import Project from "./project";
 
 const projectManager = (() => {
 
@@ -49,33 +28,29 @@ const projectManager = (() => {
         const todoList = document.createElement("ol");
         todoList.id = "todoList";
 
-        projectContent.appendChild(todoList);
+        const buttonDiv = document.createElement("div");
+        buttonDiv.id = "buttonDiv";
 
+        projectContent.appendChild(todoList);
+        projectContent.appendChild(buttonDiv);
 
         tabContent.appendChild(projectList);
         tabContent.appendChild(projectContent);
-
+        
         renderProject();
     };
 
     const renderProject = () => {
         const tabContent = document.querySelector("#tab-content");
         const projectList = document.querySelector("#projectList");
-        const todoList = document.querySelector("#todoList");
         
         projectArr.forEach((el) => {
             const listElement = document.createElement("li");
             listElement.innerText = el.name;
 
             listElement.addEventListener("click", () => {
-                projectContent.innerHTML = "";
-                
-                el.todoArr.forEach((todoEl) => {
-                    const todoListElement = document.createElement("li");
-                    todoListElement.innerText = todoEl.name;
-
-                    todoList.appendChild(todoListElement);
-                });
+                projectContent.firstChild.innerHTML = "";       
+                renderTodo(el);         
             });
 
             projectList.appendChild(listElement);
@@ -91,6 +66,11 @@ const projectManager = (() => {
 
             const newProjectListElement = document.createElement("li");
             newProjectListElement.innerText = newProject.name;
+
+            newProjectListElement.addEventListener("click", () => {
+                projectContent.firstChild.innerHTML = "";       
+                renderTodo(newProject);
+            });
             projectList.appendChild(newProjectListElement);
         });
 
@@ -109,6 +89,65 @@ const projectManager = (() => {
             if(el.name === projectObj.name) {
                 projectArr.splice(projectObj.projectID, 1);
             }
+        });
+    };
+
+    const renderTodo = (projectObj) => {
+        const todoList = document.querySelector("#todoList");
+        // const projectContent = document.querySelector("#projectContent");
+        const buttonDiv = document.querySelector("#buttonDiv");
+
+        projectObj.todoArr.forEach((todoEl) => {
+            const todoListElement = document.createElement("li");
+            todoListElement.innerText = todoEl.name;
+
+            todoList.appendChild(todoListElement);
+        });
+
+        const addTodoButton = document.createElement("button");
+        addTodoButton.innerText = "Add Todo";
+
+        buttonDiv.innerHTML = "";
+        buttonDiv.appendChild(addTodoButton);
+
+        addTodoButton.addEventListener("click", () => {
+            const newTodoName = prompt("Name for the todo? ");
+
+            projectObj.addTodo(newTodoName);
+
+            // renderTodo(projectObj);
+
+            todoList.innerHTML = "";
+
+            console.log(projectObj);
+            projectObj.todoArr.forEach((todoEl) => {
+                const todoListElement = document.createElement("li");
+                todoListElement.innerText = todoEl.name;
+
+                todoList.appendChild(todoListElement);
+            });
+        });
+
+        const removeTodoButton = document.createElement("button");
+        removeTodoButton.id = "removeTodoButton";
+        removeTodoButton.innerText = "Remove Todo";
+
+        buttonDiv.appendChild(removeTodoButton);
+        
+        removeTodoButton.addEventListener("click", () => {
+            const removeID = Number(prompt("number of todo?"));
+
+            console.log(projectObj.todoArr[removeID]);
+            projectObj.todoArr.splice(removeID - 1, 1);
+
+            todoList.innerHTML = "";
+            
+            projectObj.todoArr.forEach((todoEl) => {
+                const todoListElement = document.createElement("li");
+                todoListElement.innerText = todoEl.name;
+
+                todoList.appendChild(todoListElement);
+            });
         });
     };
     

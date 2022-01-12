@@ -1,5 +1,5 @@
 import aboutPage from "./modules/about";
-import projectsPage from "./modules/projects";
+import projectsPage from "./modules/projectManager";
 import implementTabSystem from "./modules/tabSystem";
 
 const pageFunctions = {aboutPage, projectsPage};

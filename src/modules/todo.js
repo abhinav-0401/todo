@@ -14,11 +14,11 @@ class Todo {
             this.name = name;
         }
 
-        this.id = projectObj.todoArr.length - 1;
+        this.id = projectObj.todoArr.length;
     }
 
     refreshID(projectObj) {
-        this.id = projectObj.todoArr.length - 1;
+        this.id = projectObj.todoArr.length;
     }
 
 }
